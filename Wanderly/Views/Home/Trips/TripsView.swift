@@ -29,7 +29,7 @@ struct TripsView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                             Text("Budget: $\(trip.budget, specifier: "%.2f")")
-                                    .font(.subheadline)
+                                .font(.subheadline)
                         }
                         Spacer()
                         Button("Edit") {
@@ -46,7 +46,7 @@ struct TripsView: View {
                     Button(action: {
                         showAddTripView = true
                     }) {
-                        Label("Edit Trip", systemImage: "plus")
+                        Label("Add Trip", systemImage: "plus")
                     }
                 }
             }
@@ -58,6 +58,11 @@ struct TripsView: View {
                 AddTripView(existingTrip: trip)
                     .environment(\.managedObjectContext, viewContext)
             }
+        }
+        .onAppear {
+            // Ensure the trips list is refreshed when the view appears
+            trips.nsPredicate = nil  // Optional: Reset the fetch predicate if needed
+            viewContext.refreshAllObjects()
         }
     }
 

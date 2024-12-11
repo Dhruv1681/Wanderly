@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		445FA3042D08B22900BBFFD8 /* Trip+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445FA3022D08B22900BBFFD8 /* Trip+CoreDataClass.swift */; };
-		445FA3052D08B22900BBFFD8 /* Trip+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445FA3032D08B22900BBFFD8 /* Trip+CoreDataProperties.swift */; };
 		4495E0F42CFE59C300906E4B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4495E0F32CFE59C300906E4B /* FirebaseAuth */; };
 		4495E0F62CFE59C300906E4B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4495E0F52CFE59C300906E4B /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
@@ -31,8 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		445FA3022D08B22900BBFFD8 /* Trip+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Trip+CoreDataClass.swift"; path = "Wanderly/Trip+CoreDataClass.swift"; sourceTree = "<group>"; };
-		445FA3032D08B22900BBFFD8 /* Trip+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Trip+CoreDataProperties.swift"; path = "Wanderly/Trip+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		445FA3622D09DBD100BBFFD8 /* Wanderly.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Wanderly.xcodeproj; sourceTree = SOURCE_ROOT; };
 		4495E0BA2CFE52C600906E4B /* Wanderly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wanderly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4495E0CF2CFE52C900906E4B /* WanderlyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WanderlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4495E0D92CFE52C900906E4B /* WanderlyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WanderlyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,11 +101,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		445FA3A32D09DD0F00BBFFD8 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4495E0B12CFE52C600906E4B = {
 			isa = PBXGroup;
 			children = (
-				445FA3022D08B22900BBFFD8 /* Trip+CoreDataClass.swift */,
-				445FA3032D08B22900BBFFD8 /* Trip+CoreDataProperties.swift */,
+				445FA3622D09DBD100BBFFD8 /* Wanderly.xcodeproj */,
 				4495E0BC2CFE52C600906E4B /* Wanderly */,
 				4495E0D22CFE52C900906E4B /* WanderlyTests */,
 				4495E0DC2CFE52C900906E4B /* WanderlyUITests */,
@@ -237,6 +238,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4495E0BB2CFE52C600906E4B /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 445FA3A32D09DD0F00BBFFD8 /* Products */;
+					ProjectRef = 445FA3622D09DBD100BBFFD8 /* Wanderly.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				4495E0B92CFE52C600906E4B /* Wanderly */,
@@ -275,8 +282,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				445FA3042D08B22900BBFFD8 /* Trip+CoreDataClass.swift in Sources */,
-				445FA3052D08B22900BBFFD8 /* Trip+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

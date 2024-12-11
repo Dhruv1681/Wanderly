@@ -35,7 +35,7 @@ struct HomeView: View {
                     NavigationLink(destination: Text("Calendar View Placeholder")) {
                         FeatureCard(title: "Calendar", iconName: "calendar")
                     }
-                    NavigationLink(destination: Text("Budget Planner Placeholder")) {
+                    NavigationLink(destination: BudgetView()) {
                         FeatureCard(title: "Budget", iconName: "creditcard")
                     }
                 }
@@ -53,7 +53,7 @@ struct HomeView: View {
                 } else {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 55) {
-                            ForEach(upcomingTrips) { trip in
+                            ForEach(upcomingTrips, id: \.objectID) { trip in
                                 TripCard(
                                     destination: trip.destination ?? "Unknown Destination",
                                     date: formattedDateRange(start: trip.startDate, end: trip.endDate)
