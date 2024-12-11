@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		445FA3042D08B22900BBFFD8 /* Trip+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445FA3022D08B22900BBFFD8 /* Trip+CoreDataClass.swift */; };
+		445FA3052D08B22900BBFFD8 /* Trip+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445FA3032D08B22900BBFFD8 /* Trip+CoreDataProperties.swift */; };
+		4495E0F42CFE59C300906E4B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4495E0F32CFE59C300906E4B /* FirebaseAuth */; };
+		4495E0F62CFE59C300906E4B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4495E0F52CFE59C300906E4B /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4495E0D02CFE52C900906E4B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,14 +31,37 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		445FA3022D08B22900BBFFD8 /* Trip+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Trip+CoreDataClass.swift"; path = "Wanderly/Trip+CoreDataClass.swift"; sourceTree = "<group>"; };
+		445FA3032D08B22900BBFFD8 /* Trip+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Trip+CoreDataProperties.swift"; path = "Wanderly/Trip+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4495E0BA2CFE52C600906E4B /* Wanderly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wanderly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4495E0CF2CFE52C900906E4B /* WanderlyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WanderlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4495E0D92CFE52C900906E4B /* WanderlyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WanderlyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4495E0F02CFE583E00906E4B /* Exceptions for "Wanderly" folder in "WanderlyTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"GoogleService-Info.plist",
+			);
+			target = 4495E0CE2CFE52C900906E4B /* WanderlyTests */;
+		};
+		4495E0F12CFE583E00906E4B /* Exceptions for "Wanderly" folder in "WanderlyUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"GoogleService-Info.plist",
+			);
+			target = 4495E0D82CFE52C900906E4B /* WanderlyUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4495E0BC2CFE52C600906E4B /* Wanderly */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				4495E0F02CFE583E00906E4B /* Exceptions for "Wanderly" folder in "WanderlyTests" target */,
+				4495E0F12CFE583E00906E4B /* Exceptions for "Wanderly" folder in "WanderlyUITests" target */,
+			);
 			path = Wanderly;
 			sourceTree = "<group>";
 		};
@@ -52,6 +82,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4495E0F42CFE59C300906E4B /* FirebaseAuth in Frameworks */,
+				4495E0F62CFE59C300906E4B /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +107,8 @@
 		4495E0B12CFE52C600906E4B = {
 			isa = PBXGroup;
 			children = (
+				445FA3022D08B22900BBFFD8 /* Trip+CoreDataClass.swift */,
+				445FA3032D08B22900BBFFD8 /* Trip+CoreDataProperties.swift */,
 				4495E0BC2CFE52C600906E4B /* Wanderly */,
 				4495E0D22CFE52C900906E4B /* WanderlyTests */,
 				4495E0DC2CFE52C900906E4B /* WanderlyUITests */,
@@ -112,6 +146,8 @@
 			);
 			name = Wanderly;
 			packageProductDependencies = (
+				4495E0F32CFE59C300906E4B /* FirebaseAuth */,
+				4495E0F52CFE59C300906E4B /* FirebaseFirestore */,
 			);
 			productName = Wanderly;
 			productReference = 4495E0BA2CFE52C600906E4B /* Wanderly.app */;
@@ -195,6 +231,9 @@
 			);
 			mainGroup = 4495E0B12CFE52C600906E4B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4495E0F22CFE59C200906E4B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4495E0BB2CFE52C600906E4B /* Products */;
 			projectDirPath = "";
@@ -236,6 +275,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				445FA3042D08B22900BBFFD8 /* Trip+CoreDataClass.swift in Sources */,
+				445FA3052D08B22900BBFFD8 /* Trip+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +437,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Wanderly/Preview Content\"";
+				DEVELOPMENT_TEAM = RJB6QCF548;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -424,6 +466,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Wanderly/Preview Content\"";
+				DEVELOPMENT_TEAM = RJB6QCF548;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -552,6 +595,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4495E0F22CFE59C200906E4B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4495E0F32CFE59C300906E4B /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4495E0F22CFE59C200906E4B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		4495E0F52CFE59C300906E4B /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4495E0F22CFE59C200906E4B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4495E0B22CFE52C600906E4B /* Project object */;
 }
