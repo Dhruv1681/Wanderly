@@ -52,7 +52,7 @@ struct HomeView: View {
                         .padding(.horizontal)
                 } else {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 55) {
+                        HStack(spacing: 15) {
                             ForEach(upcomingTrips, id: \.objectID) { trip in
                                 TripCard(
                                     destination: trip.destination ?? "Unknown Destination",

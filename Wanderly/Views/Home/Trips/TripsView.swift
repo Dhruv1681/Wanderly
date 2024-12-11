@@ -14,28 +14,27 @@ struct TripsView: View {
         animation: .default
     ) private var trips: FetchedResults<Trip>
 
-    @State private var showAddTripView = false
-    @State private var tripToEdit: Trip? = nil
+    @State private var isAddingTrip = false
+    @State private var editingTrip: Trip? = nil
 
     var body: some View {
         NavigationView {
             List {
                 ForEach(trips) { trip in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(trip.destination ?? "Unknown Destination")
-                                .font(.headline)
-                            Text("\(formattedDate(trip.startDate)) - \(formattedDate(trip.endDate))")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                            Text("Budget: $\(trip.budget, specifier: "%.2f")")
-                                .font(.subheadline)
+                    NavigationLink(destination: AddTripView(existingTrip: trip)
+                                    .environment(\.managedObjectContext, viewContext)) {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(trip.destination ?? "Unknown Destination")
+                                    .font(.headline)
+                                Text("\(formattedDate(trip.startDate)) - \(formattedDate(trip.endDate))")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                Text("Budget: $\(trip.budget, specifier: "%.2f")")
+                                    .font(.subheadline)
+                            }
+                            Spacer()
                         }
-                        Spacer()
-                        Button("Edit") {
-                            tripToEdit = trip
-                        }
-                        .buttonStyle(BorderlessButtonStyle())
                     }
                 }
                 .onDelete(perform: deleteTrips)
@@ -43,26 +42,12 @@ struct TripsView: View {
             .navigationTitle("My Trips")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(action: {
-                        showAddTripView = true
-                    }) {
+                    NavigationLink(destination: AddTripView()
+                                    .environment(\.managedObjectContext, viewContext)) {
                         Label("Add Trip", systemImage: "plus")
                     }
                 }
             }
-            .sheet(isPresented: $showAddTripView) {
-                AddTripView()
-                    .environment(\.managedObjectContext, viewContext)
-            }
-            .sheet(item: $tripToEdit) { trip in
-                AddTripView(existingTrip: trip)
-                    .environment(\.managedObjectContext, viewContext)
-            }
-        }
-        .onAppear {
-            // Ensure the trips list is refreshed when the view appears
-            trips.nsPredicate = nil  // Optional: Reset the fetch predicate if needed
-            viewContext.refreshAllObjects()
         }
     }
 

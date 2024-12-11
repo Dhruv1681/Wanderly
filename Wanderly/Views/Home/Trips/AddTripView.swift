@@ -48,11 +48,11 @@ struct AddTripView: View {
                     saveTrip()
                 }
             }
-//            ToolbarItem(placement: .cancellationAction) {
-//                Button("Cancel") {
-//                    presentationMode.wrappedValue.dismiss()
-//                }
-//            }
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
         }
         .alert("Please fill in all required fields", isPresented: $showAlert) {
             Button("OK", role: .cancel) {}
@@ -60,7 +60,17 @@ struct AddTripView: View {
     }
 
     private func saveTrip() {
-        guard !destination.isEmpty, !budget.isEmpty else {
+        guard !destination.isEmpty else {
+            showAlert = true
+            return
+        }
+        
+        guard endDate >= startDate else {
+            showAlert = true
+            return
+        }
+
+        guard let budgetValue = Double(budget), budgetValue >= 0 else {
             showAlert = true
             return
         }
@@ -69,7 +79,7 @@ struct AddTripView: View {
         trip.destination = destination
         trip.startDate = startDate
         trip.endDate = endDate
-        trip.budget = Double(budget) ?? 0
+        trip.budget = budgetValue
         trip.notes = notes
 
         do {
