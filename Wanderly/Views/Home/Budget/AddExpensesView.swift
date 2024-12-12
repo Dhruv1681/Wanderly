@@ -16,6 +16,12 @@ struct AddExpenseView: View {
     @State private var category = ""
     @State private var amount: String = ""
     @State private var note = ""
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+
+    var totalExpenses: Double {
+        trip.expenses?.compactMap { ($0 as? TripExpense)?.amount }.reduce(0, +) ?? 0
+    }
 
     var body: some View {
         Form {
@@ -32,10 +38,22 @@ struct AddExpenseView: View {
                 }
             }
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
     }
 
     private func saveExpense() {
-        guard !category.isEmpty, let expenseAmount = Double(amount) else { return }
+        guard !category.isEmpty, let expenseAmount = Double(amount) else {
+            alertMessage = "Please enter a valid category and amount."
+            showAlert = true
+            return
+        }
+
+        if totalExpenses + expenseAmount > trip.budget {
+            alertMessage = "This expense exceeds your budget. Please spend carefully."
+            showAlert = true
+        }
 
         let expense = TripExpense(context: viewContext)
         expense.category = category
@@ -48,7 +66,8 @@ struct AddExpenseView: View {
             try viewContext.save()
             presentationMode.wrappedValue.dismiss()
         } catch {
-            print("Error saving expense: \(error.localizedDescription)")
+            alertMessage = "Error saving expense: \(error.localizedDescription)"
+            showAlert = true
         }
     }
 }

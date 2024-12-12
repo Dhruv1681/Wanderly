@@ -10,6 +10,7 @@ import SwiftUI
 struct TripsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
+        entity: Trip.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Trip.startDate, ascending: true)],
         animation: .default
     ) private var trips: FetchedResults<Trip>
@@ -20,7 +21,7 @@ struct TripsView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(trips) { trip in
+                ForEach(trips, id: \.id) { trip in
                     NavigationLink(destination: AddTripView(existingTrip: trip)
                                     .environment(\.managedObjectContext, viewContext)) {
                         HStack {
@@ -32,6 +33,7 @@ struct TripsView: View {
                                     .foregroundColor(.gray)
                                 Text("Budget: $\(trip.budget, specifier: "%.2f")")
                                     .font(.subheadline)
+
                             }
                             Spacer()
                         }
@@ -48,8 +50,17 @@ struct TripsView: View {
                     }
                 }
             }
+            .onAppear {
+                printDestinations()
+            }
         }
     }
+    
+    private func printDestinations() {
+            for trip in trips {
+                print("Destination: \(trip.destination ?? "Unknown")")
+            }
+        }
 
     private func deleteTrips(offsets: IndexSet) {
         withAnimation {

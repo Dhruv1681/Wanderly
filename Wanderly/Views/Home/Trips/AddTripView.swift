@@ -48,11 +48,11 @@ struct AddTripView: View {
                     saveTrip()
                 }
             }
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            }
+//            ToolbarItem(placement: .cancellationAction) {
+//                Button("Cancel") {
+//                    presentationMode.wrappedValue.dismiss()
+//                }
+//            }
         }
         .alert("Please fill in all required fields", isPresented: $showAlert) {
             Button("OK", role: .cancel) {}
@@ -75,13 +75,30 @@ struct AddTripView: View {
             return
         }
 
-        let trip = existingTrip ?? Trip(context: viewContext)
-        trip.destination = destination
-        trip.startDate = startDate
-        trip.endDate = endDate
-        trip.budget = budgetValue
-        trip.notes = notes
+//        let trip = existingTrip ?? Trip(context: viewContext)
+//        trip.destination = destination
+//        trip.startDate = startDate
+//        trip.endDate = endDate
+//        trip.budget = budgetValue
+//        trip.notes = notes
 
+        if existingTrip == nil {
+                // Create a new trip if none exists
+                let newTrip = Trip(context: viewContext)
+                newTrip.destination = destination
+                newTrip.startDate = startDate
+                newTrip.endDate = endDate
+                newTrip.budget = budgetValue
+                newTrip.notes = notes
+            } else {
+                // Update the existing trip
+                existingTrip?.destination = destination
+                existingTrip?.startDate = startDate
+                existingTrip?.endDate = endDate
+                existingTrip?.budget = budgetValue
+                existingTrip?.notes = notes
+            }
+        
         do {
             try viewContext.save()
             presentationMode.wrappedValue.dismiss()

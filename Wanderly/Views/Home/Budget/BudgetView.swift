@@ -21,48 +21,37 @@ struct BudgetView: View {
         VStack {
             if let trip = selectedTrip {
                 BudgetOverviewView(trip: trip)
+                    .padding(.vertical, 20)
                 
                 NavigationLink(destination: AddExpenseView(trip: trip)) {
                     Text("Add Expense")
                         .font(.headline)
                         .padding()
-                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
                         .background(Color.blue)
+                        .foregroundColor(.white)
                         .cornerRadius(10)
+                        .padding(.horizontal)
                 }
+                .shadow(radius: 5)
             } else {
                 Text("Please select a trip")
                     .font(.title2)
+                    .foregroundColor(.gray)
                     .padding()
-                
-                // Display upcoming trips to select from
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(upcomingTrips, id: \.objectID) { trip in
-                            VStack {
-                                Text(trip.destination ?? "Unknown Destination")
-                                    .font(.headline)
-                                Text(formattedDateRange(start: trip.startDate, end: trip.endDate))
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
-                                
-                                Button(action: {
-                                    selectedTrip = trip
-                                    print("Selected trip: \(trip.destination ?? "Unknown")") // Debug log
-                                }) {
-                                    Text("Select")
-                                        .foregroundColor(.blue)
-                                        .padding(.top, 5)
-                                }
+            }
+            
+            ScrollView {
+                LazyVStack(spacing: 15) {
+                    ForEach(upcomingTrips, id: \.objectID) { trip in
+                        TripCardView(trip: trip, isSelected: trip == selectedTrip)
+                            .onTapGesture {
+                                selectedTrip = trip
+                                print("Selected trip: \(trip.destination ?? "Unknown")") // Debug log
                             }
-                            .padding()
-                            .background(Color(UIColor.systemBackground))
-                            .cornerRadius(10)
-                            .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 3)
-                        }
                     }
-                    .padding(.horizontal)
                 }
+                .padding()
             }
         }
         .navigationTitle("Budget")
@@ -83,22 +72,49 @@ struct BudgetView: View {
     }
 }
 
-
-//struct BudgetView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        // Create an in-memory Core Data context for the preview
-//        let context = PersistenceController.preview.container.viewContext
-//        let sampleTrip = Trip(context: context)
-//        sampleTrip.destination = "Sample Destination"
-//        sampleTrip.startDate = Date()
-//        sampleTrip.endDate = Calendar.current.date(byAdding: .day, value: 5, to: Date())
-//        sampleTrip.budget = 1000.0
-//        sampleTrip.notes = "Sample notes"
-//        sampleTrip.id = UUID()
-//        
-//        return NavigationView {
-//            BudgetView()
-//                .environment(\.managedObjectContext, context)
-//        }
-//    }
-//}
+struct TripCardView: View {
+    let trip: Trip
+    let isSelected: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(trip.destination ?? "Unknown Destination")
+                .font(.headline)
+                .foregroundColor(isSelected ? .white : .primary)
+            
+            Text(formattedDateRange(start: trip.startDate, end: trip.endDate))
+                .font(.subheadline)
+                .foregroundColor(isSelected ? .white.opacity(0.8) : .gray)
+            
+            Spacer()
+            
+            if isSelected {
+                Text("Selected")
+                    .font(.caption)
+                    .foregroundColor(.white)
+                    .padding(.top, 5)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(isSelected ? Color.blue : Color(UIColor.systemBackground))
+        .cornerRadius(12)
+        .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 3)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
+        )
+        .animation(.easeInOut, value: isSelected)
+    }
+    
+    private func formattedDateRange(start: Date?, end: Date?) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        
+        if let start = start, let end = end {
+            return "\(formatter.string(from: start)) - \(formatter.string(from: end))"
+        } else {
+            return "N/A"
+        }
+    }
+}
