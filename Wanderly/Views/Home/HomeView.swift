@@ -32,7 +32,7 @@ struct HomeView: View {
                     NavigationLink(destination: TripsView()) {
                         FeatureCard(title: "My Trips", iconName: "airplane")
                     }
-                    NavigationLink(destination: Text("Calendar View Placeholder")) {
+                    NavigationLink(destination: CalendarView()) {
                         FeatureCard(title: "Calendar", iconName: "calendar")
                     }
                     NavigationLink(destination: BudgetView()) {
@@ -78,6 +78,7 @@ struct HomeView: View {
                         .padding()
                         .foregroundColor(.white)
                         .background(Color.blue)
+//                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
                         .cornerRadius(10)
                     }
                     Spacer()
@@ -103,7 +104,7 @@ struct HomeView: View {
 
     private func formattedDateRange(start: Date?, end: Date?) -> String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
+        formatter.dateFormat = "MM/dd/yy"
 
         if let start = start, let end = end {
             return "\(formatter.string(from: start)) - \(formatter.string(from: end))"
@@ -145,16 +146,25 @@ struct TripCard: View {
         VStack(alignment: .leading) {
             Text(destination)
                 .font(.headline)
+                .foregroundColor(.white)
                 .fontWeight(.bold)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .padding(.bottom, 3)
             Text(date)
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundColor(.white)
         }
         .padding()
-        .frame(width: 150, height: 100)
-        .background(Color(UIColor.systemBackground))
+        .frame(width: 180, height: 100)
+//        .background(Color(UIColor.systemBackground))
+        .background(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.9), Color.blue.opacity(0.5)]), startPoint: .top, endPoint: .bottom))
         .cornerRadius(10)
         .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 3)
+        .overlay(
+            RoundedRectangle(cornerRadius: 15)
+                .stroke(Color.blue.opacity(0.6), lineWidth: 1)
+        )
     }
 }
 

@@ -21,7 +21,7 @@ struct BudgetView: View {
         VStack {
             if let trip = selectedTrip {
                 BudgetOverviewView(trip: trip)
-                    .padding(.vertical, 20)
+//                    .padding(.vertical, 10)
                 
                 NavigationLink(destination: AddExpenseView(trip: trip)) {
                     Text("Add Expense")

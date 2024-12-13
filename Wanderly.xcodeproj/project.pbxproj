@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		445FA46B2D0CB0BC00BBFFD8 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 445FA46A2D0CB0BC00BBFFD8 /* FSCalendar */; };
 		4495E0F42CFE59C300906E4B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4495E0F32CFE59C300906E4B /* FirebaseAuth */; };
 		4495E0F62CFE59C300906E4B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4495E0F52CFE59C300906E4B /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
@@ -80,6 +81,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4495E0F42CFE59C300906E4B /* FirebaseAuth in Frameworks */,
+				445FA46B2D0CB0BC00BBFFD8 /* FSCalendar in Frameworks */,
 				4495E0F62CFE59C300906E4B /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,6 +151,7 @@
 			packageProductDependencies = (
 				4495E0F32CFE59C300906E4B /* FirebaseAuth */,
 				4495E0F52CFE59C300906E4B /* FirebaseFirestore */,
+				445FA46A2D0CB0BC00BBFFD8 /* FSCalendar */,
 			);
 			productName = Wanderly;
 			productReference = 4495E0BA2CFE52C600906E4B /* Wanderly.app */;
@@ -234,6 +237,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				4495E0F22CFE59C200906E4B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				445FA4692D0CB0BC00BBFFD8 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4495E0BB2CFE52C600906E4B /* Products */;
@@ -602,6 +606,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		445FA4692D0CB0BC00BBFFD8 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.4;
+			};
+		};
 		4495E0F22CFE59C200906E4B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -613,6 +625,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		445FA46A2D0CB0BC00BBFFD8 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 445FA4692D0CB0BC00BBFFD8 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
+		};
 		4495E0F32CFE59C300906E4B /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4495E0F22CFE59C200906E4B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
