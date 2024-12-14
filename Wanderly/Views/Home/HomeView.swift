@@ -156,13 +156,13 @@ struct HomeView: View {
                         selectTrip(firstTrip) // Automatically select the first trip
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Logout") {
-                            logout()
-                        }
-                    }
-                }
+//                .toolbar {
+//                    ToolbarItem(placement: .navigationBarTrailing) {
+//                        Button("Logout") {
+//                            logout()
+//                        }
+//                    }
+//                }
             }
         } else {
             LoginView() // Navigate to LoginView if not logged in

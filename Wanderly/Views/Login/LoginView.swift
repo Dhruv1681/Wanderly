@@ -50,13 +50,16 @@ struct LoginView: View {
     }
 
     private func handleLogin() {
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+        AuthManager.shared.signIn(email: email, password: password) { success, error in
             if let error = error {
-                errorMessage = error.localizedDescription
-                return
+                errorMessage = error
+            } else {
+                let uid = Auth.auth().currentUser?.uid ?? ""
+                AuthManager.shared.fetchUserData(uid: uid) { data in
+                    print("User data: \(data ?? [:])")
+                    isLoggedIn = true
+                }
             }
-            // Set isLoggedIn to true after successful login
-            isLoggedIn = true
         }
     }
 }

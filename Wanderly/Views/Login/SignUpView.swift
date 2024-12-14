@@ -56,19 +56,33 @@ struct SignUpView: View {
         .padding()
     }
 
+//    private func handleSignUp() {
+//        if password != confirmPassword {
+//            errorMessage = "Passwords do not match"
+//            return
+//        }
+//
+//        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+//            if let error = error {
+//                errorMessage = error.localizedDescription
+//                return
+//            }
+//            // Dismiss modal to return to LoginView
+//            presentationMode.wrappedValue.dismiss()
+//        }
+//    }
     private func handleSignUp() {
         if password != confirmPassword {
             errorMessage = "Passwords do not match"
             return
         }
 
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+        AuthManager.shared.signUp(email: email, password: password) { success, error in
             if let error = error {
-                errorMessage = error.localizedDescription
-                return
+                errorMessage = error
+            } else {
+                presentationMode.wrappedValue.dismiss() // Navigate back to LoginView
             }
-            // Dismiss modal to return to LoginView
-            presentationMode.wrappedValue.dismiss()
         }
     }
 }
