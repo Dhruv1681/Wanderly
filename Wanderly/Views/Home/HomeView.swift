@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 @MainActor
 struct HomeView: View {
@@ -17,78 +18,144 @@ struct HomeView: View {
     ) private var upcomingTrips: FetchedResults<Trip>
     
     @State private var isLoggedIn = true // Track authentication status
+    @State private var weatherData: CurrentWeather? // State to hold the weather data
+    @State private var coordinates: CLLocationCoordinate2D? // State for coordinates
+    @State private var weatherService = WeatherService() // WeatherService instance
 
     var body: some View {
         if isLoggedIn {
-            VStack(alignment: .leading, spacing: 20) {
-                // Welcome Header
-                Text("Welcome back, Dhruv!")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
-
-                // Quick Access Cards
-                HStack(spacing: 15) {
-                    NavigationLink(destination: TripsView()) {
-                        FeatureCard(title: "My Trips", iconName: "airplane")
-                    }
-                    NavigationLink(destination: CalendarView()) {
-                        FeatureCard(title: "Calendar", iconName: "calendar")
-                    }
-                    NavigationLink(destination: BudgetView()) {
-                        FeatureCard(title: "Budget", iconName: "creditcard")
-                    }
-                }
-                .padding(.horizontal)
-
-                // Upcoming Trips Section
-                Text("Upcoming Trips")
-                    .font(.headline)
-                    .padding(.horizontal)
-
-                if upcomingTrips.isEmpty {
-                    Text("No upcoming trips")
-                        .foregroundColor(.gray)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Welcome Header
+                    Text("Welcome back, Dhruv!")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
                         .padding(.horizontal)
-                } else {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 15) {
-                            ForEach(upcomingTrips, id: \.objectID) { trip in
-                                TripCard(
-                                    destination: trip.destination ?? "Unknown Destination",
-                                    date: formattedDateRange(start: trip.startDate, end: trip.endDate)
-                                )
+                    
+                    // Quick Access Cards
+                    HStack(spacing: 15) {
+                        NavigationLink(destination: TripsView()) {
+                            FeatureCard(title: "My Trips", iconName: "airplane")
+                        }
+                        NavigationLink(destination: CalendarView()) {
+                            FeatureCard(title: "Calendar", iconName: "calendar")
+                        }
+                        NavigationLink(destination: BudgetView()) {
+                            FeatureCard(title: "Budget", iconName: "creditcard")
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    // Upcoming Trips Section
+                    Text("Upcoming Trips")
+                        .font(.headline)
+                        .padding(.horizontal)
+                    
+                    if upcomingTrips.isEmpty {
+                        Text("No upcoming trips")
+                            .foregroundColor(.gray)
+                            .padding(.horizontal)
+                    } else {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 15) {
+                                ForEach(upcomingTrips, id: \.objectID) { trip in
+                                    TripCard(
+                                        destination: trip.destination ?? "Unknown Destination",
+                                        date: formattedDateRange(start: trip.startDate, end: trip.endDate)
+                                    )
+                                }
                             }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
-                    }
-                }
-
-                Spacer()
-
-                // Add Trip Button
-                HStack {
-                    Spacer()
-                    NavigationLink(destination: AddTripView()) {
-                        HStack {
-                            Image(systemName: "plus")
-                            Text("Add Trip")
-                                .fontWeight(.semibold)
+                        
+                        // Display weather for the first upcoming trip
+                        if let firstTrip = upcomingTrips.first,
+                           let destination = firstTrip.destination {
+                            Text("Weather in \(destination)")
+                                .font(.headline)
+                                .padding(.horizontal)
+                            
+                            if let weather = weatherData {
+                                VStack(alignment: .leading, spacing: 10) {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 5) {
+                                            Text("Temperature:")
+                                                .font(.subheadline)
+                                                .foregroundColor(.gray)
+                                            Text("\(weather.temp_c, specifier: "%.1f")°C")
+                                                .font(.title)
+                                                .fontWeight(.bold)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        if let iconURL = weather.condition.iconURL {
+                                            AsyncImage(url: iconURL) { image in
+                                                image
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 50, height: 50)
+                                            } placeholder: {
+                                                ProgressView()
+                                            }
+                                        }
+                                    }
+                                    
+                                    Text("Condition: \(weather.condition.description.capitalized)")
+                                        .font(.subheadline)
+                                        .foregroundColor(.primary)
+                                }
+                                .padding()
+                                .background(Color(UIColor.systemGray6))
+                                .cornerRadius(10)
+                                .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 3)
+                                .padding(.horizontal)
+                            } else {
+                                Text("Loading weather data...")
+                                    .foregroundColor(.gray)
+                                    .padding(.horizontal)
+                            }
+                            
+                            // Map View with Coordinates
+                            MapView(destination: destination) // Pass the destination string here
+                                .frame(height: 150)
+                                .padding(.horizontal)
+                                .cornerRadius(10)
+                                .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 3)
+                                .onAppear {
+                                    fetchCoordinates(for: destination) 
+                                }
                         }
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.blue)
-//                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
-                        .cornerRadius(10)
                     }
+                    
                     Spacer()
+                    
+                    // Add Trip Button
+                    HStack {
+                        Spacer()
+                        NavigationLink(destination: AddTripView()) {
+                            HStack {
+                                Image(systemName: "plus")
+                                Text("Add Trip")
+                                    .fontWeight(.semibold)
+                            }
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                        }
+                        Spacer()
+                    }
+                    .padding(.bottom)
                 }
-                .padding(.bottom)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Logout") {
-                        logout()
+                .onAppear {
+                    fetchWeatherForFirstUpcomingTrip()
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Logout") {
+                            logout()
+                        }
                     }
                 }
             }
@@ -98,7 +165,6 @@ struct HomeView: View {
     }
 
     private func logout() {
-        // Clear any saved authentication tokens or user data here
         isLoggedIn = false // Update the state to navigate back to LoginView
     }
 
@@ -112,7 +178,32 @@ struct HomeView: View {
             return "N/A"
         }
     }
+
+    private func fetchWeatherForFirstUpcomingTrip() {
+        guard let firstTrip = upcomingTrips.first,
+              let destination = firstTrip.destination else { return }
+
+        weatherService.fetchWeather(for: destination) { weather in
+            DispatchQueue.main.async {
+                self.weatherData = weather
+            }
+        }
+    }
+
+    private func fetchCoordinates(for destination: String) {
+        weatherService.fetchCoordinates(for: destination) { fetchedCoordinates in
+            DispatchQueue.main.async {
+                if let coordinates = fetchedCoordinates {
+                    self.coordinates = coordinates
+                } else {
+                    print("Failed to fetch coordinates for \(destination)")
+                }
+            }
+        }
+    }
 }
+
+
 
 
 // Reusable FeatureCard Component

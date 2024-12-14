@@ -16,6 +16,10 @@ struct CalendarView: View {
     ) private var trips: FetchedResults<Trip>
 
     @State private var selectedDate: Date = Date()
+    @State private var selectedWeather: CurrentWeather?
+    @State private var isLoadingWeather: Bool = false
+
+    private let weatherService = WeatherService()
 
     var body: some View {
         VStack {
@@ -50,6 +54,10 @@ struct CalendarView: View {
                                     Text("Dates not available")
                                         .foregroundColor(.red)
                                         .font(.subheadline)
+                                }
+
+                                if let destination = trip.destination {
+                                    weatherSection(for: destination)
                                 }
                             }
                             .padding()
@@ -93,7 +101,55 @@ struct CalendarView: View {
         formatter.dateFormat = "MMM d, yyyy"
         return formatter.string(from: date)
     }
+
+    // Weather section for a destination
+    private func weatherSection(for destination: String) -> some View {
+        VStack {
+            if isLoadingWeather {
+                ProgressView("Loading weather...")
+            } else if let weather = selectedWeather {
+                HStack {
+                    if let iconURL = weather.condition.iconURL {
+                        AsyncImage(url: iconURL) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 40, height: 40)
+                        } placeholder: {
+                            ProgressView()
+                        }
+                    }
+
+                    VStack(alignment: .leading) {
+                        Text("\(weather.temp_c, specifier: "%.1f")°C")
+                            .font(.headline)
+                        Text(weather.condition.description.capitalized)
+                            .font(.subheadline)
+                    }
+                }
+                .background(Color(UIColor.systemGray6))
+            } else {
+                Text("No weather data available.")
+                    .foregroundColor(.gray)
+            }
+        }
+        .onAppear {
+            fetchWeather(for: destination)
+        }
+    }
+
+    // Fetch weather for a destination
+    private func fetchWeather(for destination: String) {
+        isLoadingWeather = true
+        weatherService.fetchWeather(for: destination) { weather in
+            DispatchQueue.main.async {
+                self.selectedWeather = weather
+                self.isLoadingWeather = false
+            }
+        }
+    }
 }
+
 
 
 extension Date {

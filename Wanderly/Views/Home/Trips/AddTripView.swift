@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct AddTripView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -18,6 +19,7 @@ struct AddTripView: View {
     @State private var notes = ""
 
     @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var existingTrip: Trip?
 
@@ -48,56 +50,62 @@ struct AddTripView: View {
                     saveTrip()
                 }
             }
-//            ToolbarItem(placement: .cancellationAction) {
-//                Button("Cancel") {
-//                    presentationMode.wrappedValue.dismiss()
-//                }
-//            }
         }
-        .alert("Please fill in all required fields", isPresented: $showAlert) {
+        .alert(alertMessage, isPresented: $showAlert) {
             Button("OK", role: .cancel) {}
         }
     }
 
     private func saveTrip() {
         guard !destination.isEmpty else {
+            alertMessage = "Please fill in all required fields"
             showAlert = true
             return
         }
         
         guard endDate >= startDate else {
+            alertMessage = "End date must be later than start date."
             showAlert = true
             return
         }
 
         guard let budgetValue = Double(budget), budgetValue >= 0 else {
+            alertMessage = "Please enter a valid budget."
             showAlert = true
             return
         }
 
-//        let trip = existingTrip ?? Trip(context: viewContext)
-//        trip.destination = destination
-//        trip.startDate = startDate
-//        trip.endDate = endDate
-//        trip.budget = budgetValue
-//        trip.notes = notes
+        // Prevent setting trips for past dates
+        if startDate < Date() {
+            alertMessage = "Start date cannot be in the past."
+            showAlert = true
+            return
+        }
 
+        // Check for overlapping trips
+        if isOverlappingTrip() {
+            alertMessage = "This trip overlaps with an existing trip."
+            showAlert = true
+            return
+        }
+
+        // If no issues, save the trip
         if existingTrip == nil {
-                // Create a new trip if none exists
-                let newTrip = Trip(context: viewContext)
-                newTrip.destination = destination
-                newTrip.startDate = startDate
-                newTrip.endDate = endDate
-                newTrip.budget = budgetValue
-                newTrip.notes = notes
-            } else {
-                // Update the existing trip
-                existingTrip?.destination = destination
-                existingTrip?.startDate = startDate
-                existingTrip?.endDate = endDate
-                existingTrip?.budget = budgetValue
-                existingTrip?.notes = notes
-            }
+            // Create a new trip if none exists
+            let newTrip = Trip(context: viewContext)
+            newTrip.destination = destination
+            newTrip.startDate = startDate
+            newTrip.endDate = endDate
+            newTrip.budget = budgetValue
+            newTrip.notes = notes
+        } else {
+            // Update the existing trip
+            existingTrip?.destination = destination
+            existingTrip?.startDate = startDate
+            existingTrip?.endDate = endDate
+            existingTrip?.budget = budgetValue
+            existingTrip?.notes = notes
+        }
         
         do {
             try viewContext.save()
@@ -105,6 +113,31 @@ struct AddTripView: View {
         } catch {
             print("Error saving trip: \(error.localizedDescription)")
         }
+    }
+
+    private func isOverlappingTrip() -> Bool {
+        // Fetch all trips from the database
+        let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
+        let currentTrips: [Trip]
+        
+        do {
+            currentTrips = try viewContext.fetch(fetchRequest)
+        } catch {
+            print("Error fetching trips: \(error.localizedDescription)")
+            return false
+        }
+
+        // Check for overlapping dates with existing trips
+        for trip in currentTrips {
+            if let existingStart = trip.startDate, let existingEnd = trip.endDate {
+                // If the new trip overlaps with any existing trip, return true
+                if (startDate <= existingEnd && endDate >= existingStart) {
+                    return true
+                }
+            }
+        }
+        
+        return false
     }
 }
 

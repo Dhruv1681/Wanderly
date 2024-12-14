@@ -55,8 +55,8 @@ struct TripsView: View {
             }
         }
     }
-    
-    private func printDestinations() {
+
+    func printDestinations() {
             for trip in trips {
                 print("Destination: \(trip.destination ?? "Unknown")")
             }
