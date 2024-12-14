@@ -21,14 +21,15 @@ struct HomeView: View {
     @State private var weatherData: CurrentWeather? // State to hold the weather data
     @State private var coordinates: CLLocationCoordinate2D? // State for coordinates
     @State private var weatherService = WeatherService() // WeatherService instance
+    @State private var selectedTrip: Trip? // Track the selected trip
 
     var body: some View {
         if isLoggedIn {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     // Welcome Header
-                    Text("Welcome back, Dhruv!")
-                        .font(.largeTitle)
+                    Text("Dashboard")
+                        .font(.title)
                         .fontWeight(.bold)
                         .padding(.horizontal)
                     
@@ -63,14 +64,16 @@ struct HomeView: View {
                                         destination: trip.destination ?? "Unknown Destination",
                                         date: formattedDateRange(start: trip.startDate, end: trip.endDate)
                                     )
+                                    .onTapGesture {
+                                        selectTrip(trip) // Handle trip selection
+                                    }
                                 }
                             }
                             .padding(.horizontal)
                         }
                         
-                        // Display weather for the first upcoming trip
-                        if let firstTrip = upcomingTrips.first,
-                           let destination = firstTrip.destination {
+                        // Show weather and map for the selected trip
+                        if let selectedTrip = selectedTrip, let destination = selectedTrip.destination {
                             Text("Weather in \(destination)")
                                 .font(.headline)
                                 .padding(.horizontal)
@@ -123,7 +126,7 @@ struct HomeView: View {
                                 .cornerRadius(10)
                                 .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 3)
                                 .onAppear {
-                                    fetchCoordinates(for: destination) 
+                                    fetchCoordinates(for: destination)
                                 }
                         }
                     }
@@ -149,7 +152,9 @@ struct HomeView: View {
                     .padding(.bottom)
                 }
                 .onAppear {
-                    fetchWeatherForFirstUpcomingTrip()
+                    if let firstTrip = upcomingTrips.first {
+                        selectTrip(firstTrip) // Automatically select the first trip
+                    }
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -179,9 +184,9 @@ struct HomeView: View {
         }
     }
 
-    private func fetchWeatherForFirstUpcomingTrip() {
-        guard let firstTrip = upcomingTrips.first,
-              let destination = firstTrip.destination else { return }
+    private func fetchWeatherForSelectedTrip() {
+        guard let selectedTrip = selectedTrip,
+              let destination = selectedTrip.destination else { return }
 
         weatherService.fetchWeather(for: destination) { weather in
             DispatchQueue.main.async {
@@ -201,10 +206,12 @@ struct HomeView: View {
             }
         }
     }
+
+    private func selectTrip(_ trip: Trip) {
+        selectedTrip = trip
+        fetchWeatherForSelectedTrip() // Fetch weather data for the selected trip
+    }
 }
-
-
-
 
 // Reusable FeatureCard Component
 struct FeatureCard: View {
