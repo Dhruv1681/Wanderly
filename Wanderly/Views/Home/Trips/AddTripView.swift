@@ -33,38 +33,76 @@ struct AddTripView: View {
     }
 
     var body: some View {
-        Form {
-            Section(header: Text("Trip Details")) {
-                TextField("Destination", text: $destination)
-                DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                DatePicker("End Date", selection: $endDate, displayedComponents: .date)
-                TextField("Budget", text: $budget)
-                    .keyboardType(.decimalPad)
-                TextField("Notes (Optional)", text: $notes)
-            }
-        }
-        .navigationTitle(existingTrip == nil ? "Add Trip" : "Edit Trip")
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
-                    saveTrip()
+        NavigationView {
+            Form {
+                // Trip Details Section
+                Section(header: Text("Trip Details")
+                            .font(.headline)
+                            .foregroundColor(.blue)) {
+                    HStack {
+                        Image(systemName: "map.fill")
+                            .foregroundColor(.blue)
+                        TextField("Destination", text: $destination)
+                            .autocapitalization(.words)
+                    }
+
+                    DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
+                        .accentColor(.blue)
+                    DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                        .accentColor(.blue)
+
+                    HStack {
+                        Image(systemName: "dollarsign.circle.fill")
+                            .foregroundColor(.green)
+                        TextField("Budget", text: $budget)
+                            .keyboardType(.decimalPad)
+                    }
+                }
+
+                // Notes Section
+                Section(header: Text("Additional Notes")
+                            .font(.headline)
+                            .foregroundColor(.blue)) {
+                    HStack(alignment: .top) {
+                        Image(systemName: "pencil.tip")
+                            .foregroundColor(.orange)
+                        TextField("Notes (Optional)", text: $notes)
+                    }
+                }
+
+                // Save Button Section
+                Section {
+                    Button(action: saveTrip) {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.white)
+                            Text(existingTrip == nil ? "Add Trip" : "Update Trip")
+                                .fontWeight(.bold)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    }
                 }
             }
-        }
-        .alert(alertMessage, isPresented: $showAlert) {
-            Button("OK", role: .cancel) {}
+            .navigationTitle(existingTrip == nil ? "Add Trip" : "Edit Trip")
+            .alert(alertMessage, isPresented: $showAlert) {
+                Button("OK", role: .cancel) {}
+            }
         }
     }
 
     private func saveTrip() {
         guard !destination.isEmpty else {
-            alertMessage = "Please fill in all required fields"
+            alertMessage = "Please enter a destination."
             showAlert = true
             return
         }
-        
+
         guard endDate >= startDate else {
-            alertMessage = "End date must be later than start date."
+            alertMessage = "End date must be after the start date."
             showAlert = true
             return
         }
@@ -75,69 +113,28 @@ struct AddTripView: View {
             return
         }
 
-        // Prevent setting trips for past dates
-        if startDate < Date() {
-            alertMessage = "Start date cannot be in the past."
-            showAlert = true
-            return
-        }
-
-        // Check for overlapping trips
-        if isOverlappingTrip() {
-            alertMessage = "This trip overlaps with an existing trip."
-            showAlert = true
-            return
-        }
-
-        // If no issues, save the trip
         if existingTrip == nil {
-            // Create a new trip if none exists
             let newTrip = Trip(context: viewContext)
             newTrip.destination = destination
             newTrip.startDate = startDate
             newTrip.endDate = endDate
             newTrip.budget = budgetValue
             newTrip.notes = notes
+            newTrip.id = UUID()
         } else {
-            // Update the existing trip
             existingTrip?.destination = destination
             existingTrip?.startDate = startDate
             existingTrip?.endDate = endDate
             existingTrip?.budget = budgetValue
             existingTrip?.notes = notes
         }
-        
+
         do {
             try viewContext.save()
             presentationMode.wrappedValue.dismiss()
         } catch {
             print("Error saving trip: \(error.localizedDescription)")
         }
-    }
-
-    private func isOverlappingTrip() -> Bool {
-        // Fetch all trips from the database
-        let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
-        let currentTrips: [Trip]
-        
-        do {
-            currentTrips = try viewContext.fetch(fetchRequest)
-        } catch {
-            print("Error fetching trips: \(error.localizedDescription)")
-            return false
-        }
-
-        // Check for overlapping dates with existing trips
-        for trip in currentTrips {
-            if let existingStart = trip.startDate, let existingEnd = trip.endDate {
-                // If the new trip overlaps with any existing trip, return true
-                if (startDate <= existingEnd && endDate >= existingStart) {
-                    return true
-                }
-            }
-        }
-        
-        return false
     }
 }
 

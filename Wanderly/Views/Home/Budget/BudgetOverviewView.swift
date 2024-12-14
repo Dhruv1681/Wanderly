@@ -38,7 +38,7 @@ struct BudgetOverviewView: View {
                         Spacer()
                         NavigationLink(destination: ExpenseListView(trip: trip)) {
                             HStack {
-                                Image(systemName: "list.bullet")
+                                Image(systemName: "arrow.right.circle.fill")
                                     .foregroundColor(.blue)
                                 Text("View Expenses")
                                     .font(.body)

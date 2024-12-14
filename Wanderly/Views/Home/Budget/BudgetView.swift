@@ -44,7 +44,7 @@ struct BudgetView: View {
             ScrollView {
                 LazyVStack(spacing: 15) {
                     ForEach(upcomingTrips, id: \.objectID) { trip in
-                        TripCardView(trip: trip, isSelected: trip == selectedTrip)
+                        TripView(trip: trip, isSelected: trip == selectedTrip)
                             .onTapGesture {
                                 selectedTrip = trip
                                 print("Selected trip: \(trip.destination ?? "Unknown")") // Debug log
@@ -72,7 +72,7 @@ struct BudgetView: View {
     }
 }
 
-struct TripCardView: View {
+struct TripView: View {
     let trip: Trip
     let isSelected: Bool
     

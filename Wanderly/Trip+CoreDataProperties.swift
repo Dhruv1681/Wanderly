@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 
-extension Trip: Identifiable {
+extension Trip {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Trip> {
         return NSFetchRequest<Trip>(entityName: "Trip")
